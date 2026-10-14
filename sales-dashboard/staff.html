@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>云栖咖啡 · 员工工时</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">云</div>
+    <div class="brand-text">
+      <h1>云栖咖啡 · 中山路店</h1>
+      <p class="muted">员工考勤与工时</p>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <a href="index.html">销售看板</a>
+    <a href="staff.html" class="active">员工工时</a>
+  </nav>
+
+  <div class="controls">
+    <button type="button" class="btn" id="prevMonth" title="上个月">‹</button>
+    <input type="month" id="monthPicker" aria-label="选择月份">
+    <button type="button" class="btn" id="nextMonth" title="下个月">›</button>
+    <button type="button" class="btn primary" id="thisMonthBtn">本月</button>
+  </div>
+</header>
+
+<main>
+  <section class="statusbar" id="statusBar"></section>
+
+  <section class="kpis" id="kpis"></section>
+
+  <section class="grid">
+    <div class="card span2">
+      <div class="card-head">
+        <div>
+          <h2>每日总工时</h2>
+          <p class="muted" id="dayChartSub">按天统计全店打卡工时</p>
+        </div>
+      </div>
+      <div class="chart" id="dayChart"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>岗位工时占比</h2>
+          <p class="muted">按岗位汇总</p>
+        </div>
+      </div>
+      <div class="cat-list" id="roleList"></div>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="card span3">
+      <div class="card-head">
+        <div>
+          <h2>员工工时汇总</h2>
+          <p class="muted">点击某一行查看该员工当月每日打卡明细</p>
+        </div>
+      </div>
+      <div class="table-wrap" id="staffTable"></div>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="card span3" id="detailCard"></div>
+  </section>
+
+  <p class="footnote">
+    本页面所有员工、打卡时间与工时均为演示用虚拟数据，按「员工 + 日期」确定性生成（同一天每次打开结果一致）。
+    门店自 2024-01-01 开业，早于该日期的月份没有数据。
+    工时 = 下班时间 − 上班时间 − 休息时长；早/中/晚班为 9 小时跨度扣 1 小时休息，全班为 12 小时跨度扣 1.5 小时休息，兼职班不扣休息。
+    月度工时参考值 174 小时（21.75 天 × 8 小时），本月进行中时按已过天数等比折算。
+  </p>
+</main>
+
+<script src="data.js"></script>
+<script src="staff.js"></script>
+</body>
+</html>
