@@ -29,6 +29,9 @@ pnpm-debug.log*
 Thumbs.db
 desktop.ini
 
+# --- Cursor MCP 配置（内含 GitHub Token，禁止提交）---
+.cursor/mcp.json
+
 # --- 日志与临时文件 ---
 *.log
 *.tmp

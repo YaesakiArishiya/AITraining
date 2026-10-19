@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>官网桌面预览（1280 缩放到 973）</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #eef1f8;
+      }
+      .stage {
+        width: 973px;
+        height: 684px;
+        margin: 16px auto;
+        overflow: hidden;
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
+      }
+      iframe {
+        display: block;
+        width: 1280px;
+        height: 900px;
+        border: 0;
+        transform: scale(0.76016);
+        transform-origin: top left;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <iframe id="frame" src="../docs/index.html" title="官网桌面预览"></iframe>
+    </div>
+  </body>
+</html>

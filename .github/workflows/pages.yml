@@ -1,0 +1,44 @@
+name: Deploy website to GitHub Pages
+
+# 只在官网或本工作流发生变化时重新发布，避免每次提交都触发
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - "image-extractor/docs/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+# GitHub Pages 部署所需的最小权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只保留一次发布，新的提交会取消排队中的旧任务
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload static site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # 官网根目录（含 index.html / css / js / assets）
+          path: image-extractor/docs
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

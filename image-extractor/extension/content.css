@@ -1,0 +1,232 @@
+/* ==========================================================================
+   商品图片提取器 —— 悬浮按钮样式
+   --------------------------------------------------------------------------
+   按钮渲染在 Shadow DOM 中，样式通过 <link> 引入本文件，
+   页面自身的 CSS 不会影响按钮，按钮也不会污染页面样式。
+   ========================================================================== */
+
+:host {
+  all: initial;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* 根容器铺满视口，但本身不接收点击，避免遮挡页面操作 */
+.imgx-root {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  pointer-events: none;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei",
+    "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #0f172a;
+}
+
+/* ---------------------------------------------------------------- 主按钮 */
+.imgx-btn {
+  position: fixed;
+  right: 24px;
+  bottom: 88px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 22px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+  user-select: none;
+  outline: none;
+}
+
+.imgx-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.42);
+}
+
+.imgx-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.32);
+}
+
+.imgx-btn:focus-visible {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.45), 0 6px 18px rgba(37, 99, 235, 0.35);
+}
+
+.imgx-btn[data-busy="true"] {
+  background: #475569;
+  cursor: progress;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.28);
+}
+
+.imgx-btn[data-busy="true"]:hover {
+  transform: none;
+  background: #475569;
+}
+
+.imgx-btn__icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  display: block;
+}
+
+.imgx-btn[data-busy="true"] .imgx-btn__icon {
+  animation: imgx-spin 0.9s linear infinite;
+}
+
+@keyframes imgx-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------------------------------------------------------------- 结果面板 */
+.imgx-panel {
+  position: fixed;
+  right: 24px;
+  bottom: 144px;
+  width: 248px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
+  pointer-events: auto;
+  animation: imgx-pop 0.18s ease-out;
+}
+
+@keyframes imgx-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.imgx-panel[hidden] {
+  display: none;
+}
+
+.imgx-panel__meta {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.imgx-panel__count {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2563eb;
+  line-height: 1;
+}
+
+.imgx-panel__label {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.imgx-panel__hint {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0 0 12px;
+}
+
+.imgx-panel__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.imgx-panel__open {
+  flex: 1 1 auto;
+  height: 34px;
+  border: 0;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.imgx-panel__open:hover {
+  background: #1d4ed8;
+}
+
+.imgx-panel__again {
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  color: #334155;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.imgx-panel__again:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.imgx-panel__close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.imgx-panel__close:hover {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+/* ---------------------------------------------------------------- 空状态 */
+.imgx-panel--empty .imgx-panel__count {
+  color: #f59e0b;
+}
+
+/* 窄屏：按钮和面板贴边，避免遮住移动端商品图 */
+@media (max-width: 600px) {
+  .imgx-btn {
+    right: 12px;
+    bottom: 72px;
+    height: 40px;
+    padding: 0 14px;
+    font-size: 13px;
+  }
+
+  .imgx-panel {
+    right: 12px;
+    left: 12px;
+    width: auto;
+    bottom: 124px;
+  }
+}

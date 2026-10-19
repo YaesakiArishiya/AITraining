@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>采集逻辑测试 · 商品图片提取器</title>
+    <style>
+      :root {
+        --bg: #f6f7f9;
+        --surface: #fff;
+        --border: #e4e7ec;
+        --text: #101828;
+        --muted: #667085;
+        --success: #027a48;
+        --danger: #b42318;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 32px 24px 80px;
+        background: var(--bg);
+        color: var(--text);
+        font: 14px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Microsoft YaHei", sans-serif;
+      }
+      .wrap {
+        max-width: 960px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 20px;
+        margin: 0 0 4px;
+      }
+      .sub {
+        color: var(--muted);
+        margin: 0 0 24px;
+        font-size: 13px;
+      }
+      .summary {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .pill {
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        font-weight: 600;
+      }
+      .pill.ok {
+        color: var(--success);
+        border-color: #abefc6;
+        background: #ecfdf3;
+      }
+      .pill.bad {
+        color: var(--danger);
+        border-color: #fecdca;
+        background: #fef3f2;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+        font-size: 13px;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 9px 12px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      th {
+        background: #f9fafb;
+        font-weight: 600;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      tr:last-child td {
+        border-bottom: 0;
+      }
+      td.ok {
+        color: var(--success);
+        white-space: nowrap;
+      }
+      td.bad {
+        color: var(--danger);
+        white-space: nowrap;
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 12px;
+        word-break: break-all;
+      }
+      .fixture {
+        /* 移到视口外而不是 display:none：
+           display:none 的元素 offsetWidth 为 0，会导致背景图扫描被跳过 */
+        position: absolute;
+        left: -10000px;
+        top: 0;
+      }
+      .note {
+        margin-top: 20px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>采集逻辑测试</h1>
+      <p class="sub">
+        本页构造了一批「真实页面可能出现的图片引用」，然后直接调用
+        <code>ImgXUtils.collectCandidates()</code> + <code>dedupe()</code>
+        验证提取、过滤、补全与去重是否正确。
+      </p>
+
+      <div class="summary" id="summary"></div>
+      <table id="report">
+        <thead>
+          <tr>
+            <th style="width: 46%">图片地址</th>
+            <th style="width: 18%">来源</th>
+            <th style="width: 16%">尺寸</th>
+            <th style="width: 20%">判定</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <p class="note" id="note"></p>
+    </div>
+
+    <!-- 用于测试的「伪页面内容」，不参与展示 -->
+    <div class="fixture" id="fixture">
+      <!-- 1. 普通主图 -->
+      <img id="f-hero" src="assets/hero.png" alt="" />
+
+      <!-- 2. 懒加载：src 是 1x1 占位图，真实地址在 data-src -->
+      <img
+        id="f-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        data-src="assets/lazy-1.png"
+        alt=""
+      />
+
+      <!-- 3. srcset：应该选中最大的 1200w -->
+      <img
+        id="f-srcset"
+        src="assets/detail-1.png"
+        srcset="assets/detail-2.png 600w, assets/hero.png 1200w"
+        alt=""
+      />
+
+      <!-- 4. 应被过滤：logo / icon / 小图 -->
+      <img id="f-logo" src="assets/logo.png" alt="" />
+      <img id="f-icon" src="assets/icon.png" alt="" />
+      <img id="f-small" src="assets/small-80.png" alt="" />
+
+      <!-- 5. 行内背景图 -->
+      <div
+        id="f-bg-inline"
+        style="width: 300px; height: 300px; background-image: url('assets/detail-2.png')"
+      ></div>
+
+      <!-- 6. 样式表里的背景图 -->
+      <div id="f-bg-class" class="bg-fixture" style="width: 320px; height: 320px"></div>
+    </div>
+
+    <style>
+      .bg-fixture {
+        background-image: url("assets/bg-1.png");
+        background-size: cover;
+      }
+    </style>
+
+    <script src="../extension/lib/image-utils.js"></script>
+    <script>
+      (function () {
+        'use strict';
+
+        // 固定尺寸，保证计算样式能取到非零宽高
+        ['f-hero', 'f-lazy', 'f-srcset', 'f-logo', 'f-icon', 'f-small'].forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el) el.style.width = '120px';
+        });
+
+        var results = [];
+
+        function assert(name, fn, detail) {
+          var ok = false;
+          var message = '';
+          try {
+            ok = !!fn();
+          } catch (e) {
+            message = e.message;
+          }
+          results.push({ name: name, ok: ok, detail: detail || message });
+        }
+
+        function abs(p) {
+          return new URL(p, location.href).href;
+        }
+
+        function run() {
+          var U = window.ImgXUtils;
+          if (!U) {
+            document.getElementById('summary').innerHTML =
+              '<span class="pill bad">工具库加载失败</span>';
+            return;
+          }
+
+          var raw = U.collectCandidates(document, { minSide: 100 });
+          var list = U.dedupe(raw);
+
+          // 与 content.js 一致：已知尺寸的直接按 100x100 过滤
+          var kept = list.filter(function (item) {
+            if (!item.width || !item.height) return true; // 未知尺寸交给预加载判断
+            return item.width >= 100 && item.height >= 100;
+          });
+
+          var urls = kept.map(function (i) {
+            return i.url;
+          });
+
+          function has(file) {
+            return urls.some(function (u) {
+              return u.indexOf(file) !== -1;
+            });
+          }
+
+          assert('提取到主图 hero.png', function () {
+            return has('assets/hero.png');
+          });
+
+          assert('读取到懒加载属性 data-src', function () {
+            return has('assets/lazy-1.png');
+          });
+
+          assert('srcset 取最大一张（1200w）', function () {
+            var el = document.getElementById('f-srcset');
+            var best = U.pickLargestFromSrcset(el.getAttribute('srcset'));
+            return best.indexOf('assets/hero.png') !== -1;
+          });
+
+          assert('读取到行内 background-image', function () {
+            return has('assets/detail-2.png');
+          });
+
+          assert('读取到样式表 background-image', function () {
+            return has('assets/bg-1.png');
+          });
+
+          assert('过滤 logo.png', function () {
+            return !has('assets/logo.png');
+          });
+
+          assert('过滤 icon.png', function () {
+            return !has('assets/icon.png');
+          });
+
+          assert('过滤 80×80 小图', function () {
+            return !has('assets/small-80.png');
+          });
+
+          assert('相对路径已补全为绝对地址', function () {
+            return urls.every(function (u) {
+              return u.indexOf('http') === 0;
+            });
+          });
+
+          assert('结果无重复', function () {
+            var keys = urls.map(function (u) {
+              return U.normalizeKey(u);
+            });
+            return new Set(keys).size === keys.length;
+          });
+
+          assert('数量在合理区间（>=5 且 <=10）', function () {
+            return kept.length >= 5 && kept.length <= 10;
+          }, '实际数量：' + kept.length);
+
+          render(kept, results);
+        }
+
+        function render(list, checks) {
+          var passCount = checks.filter(function (c) {
+            return c.ok;
+          }).length;
+          var failCount = checks.length - passCount;
+
+          document.getElementById('summary').innerHTML =
+            '<span class="pill ' + (failCount ? 'bad' : 'ok') + '">' +
+            (failCount ? '失败 ' + failCount + ' 项' : '全部通过') +
+            '</span>' +
+            '<span class="pill">通过 ' + passCount + ' / ' + checks.length + '</span>' +
+            '<span class="pill">提取到 ' + list.length + ' 张</span>';
+
+          var tbody = document.querySelector('#report tbody');
+
+          // 先列出断言结果
+          checks.forEach(function (c) {
+            var tr = document.createElement('tr');
+            tr.innerHTML =
+              '<td colspan="2">' + c.name + '</td>' +
+              '<td>' + (c.detail || '') + '</td>' +
+              '<td class="' + (c.ok ? 'ok' : 'bad') + '">' + (c.ok ? 'PASS' : 'FAIL') + '</td>';
+            tbody.appendChild(tr);
+          });
+
+          // 再列出最终保留的图片
+          list.forEach(function (item) {
+            var tr = document.createElement('tr');
+            tr.innerHTML =
+              '<td><code>' + item.url.replace(location.origin, '') + '</code></td>' +
+              '<td>' + item.source + '</td>' +
+              '<td>' + (item.width || '?') + '×' + (item.height || '?') + '</td>' +
+              '<td class="ok">保留</td>';
+            tbody.appendChild(tr);
+          });
+
+          document.getElementById('note').textContent =
+            '提示：' + (failCount ? '存在失败项，请检查过滤规则。' : '采集逻辑符合预期。') +
+            ' 页面加载完成后自动运行。';
+        }
+
+        // 等图片全部加载完成，naturalWidth 才可用
+        if (document.readyState === 'complete') {
+          run();
+        } else {
+          window.addEventListener('load', function () {
+            setTimeout(run, 50);
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

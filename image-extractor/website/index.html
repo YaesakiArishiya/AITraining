@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>商品图片提取下载器 · 一键提取详情页全部商品图</title>
+    <meta
+      name="description"
+      content="Chrome 扩展：在淘宝/天猫、京东、拼多多商家版的商品详情页一键提取全部商品图片，勾选后批量下载为 PNG。"
+    />
+    <link rel="icon" href="assets/icon.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="nav">
+      <div class="nav__inner">
+        <a class="brand" href="#top">
+          <img src="assets/icon.png" alt="" width="28" height="28" />
+          <span class="brand__name">商品图片提取下载器</span>
+        </a>
+        <nav class="nav__links" aria-label="主导航">
+          <a href="#features">功能</a>
+          <a href="#preview">界面</a>
+          <a href="#install">安装</a>
+          <a href="#faq">常见问题</a>
+        </nav>
+        <a class="btn btn--primary btn--sm" href="#install">获取插件</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <!-- ------------------------------------------------------------ Hero -->
+      <section class="hero">
+        <div class="hero__inner">
+          <div class="hero__copy">
+            <span class="tag">Chrome 扩展 · Manifest V3</span>
+            <h1>一键提取详情页的<br />全部商品图片</h1>
+            <p class="hero__lead">
+              在淘宝 / 天猫、京东、拼多多商家版的商品详情页点一下，自动扫描
+              <code>&lt;img&gt;</code>、<code>srcset</code>、懒加载属性和背景图，
+              过滤掉图标与占位图，集中展示后勾选下载，统一输出 PNG。
+            </p>
+            <div class="hero__actions">
+              <a class="btn btn--primary" href="#install">安装到 Chrome</a>
+              <a class="btn btn--ghost" href="#preview">看看界面</a>
+            </div>
+            <ul class="hero__facts">
+              <li><strong>3</strong> 个平台</li>
+              <li><strong>5</strong> 种图片来源</li>
+              <li><strong>PNG</strong> 统一输出</li>
+            </ul>
+          </div>
+
+          <figure class="hero__shot">
+            <img src="assets/gallery.png" alt="图库页面截图：网格展示商品图片，可勾选后批量下载" />
+            <figcaption>
+              提取结果在新标签页集中展示，支持全选 / 反选 / 按序号命名下载。
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ---------------------------------------------------------- 平台 -->
+      <section class="platforms" aria-label="支持的平台">
+        <div class="platforms__inner">
+          <span class="platforms__label">适用平台</span>
+          <ul>
+            <li>淘宝 / 天猫</li>
+            <li>京东</li>
+            <li>拼多多商家版</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ---------------------------------------------------------- 功能 -->
+      <section class="section" id="features">
+        <div class="section__head">
+          <h2>它解决哪些问题</h2>
+          <p>
+            详情页的图片分散在主图、SKU 缩略图、详情长图、背景图里，还可能藏在懒加载属性中。
+            插件把这一步集中做完，你只需要勾选和下载。
+          </p>
+        </div>
+
+        <div class="grid grid--3">
+          <article class="card">
+            <h3>五种来源一起扫</h3>
+            <p>
+              <code>&lt;img&gt;</code>、<code>srcset</code>、
+              <code>data-src</code> / <code>data-lazy-src</code> 等懒加载属性、
+              行内与样式表里的 <code>background-image</code>，一次采齐。
+            </p>
+          </article>
+          <article class="card">
+            <h3>自动过滤噪音</h3>
+            <p>
+              图标、logo、占位图、1×1 像素图，以及小于 100×100 的图片会被排除；
+              加载失败的链接也不会混进结果。
+            </p>
+          </article>
+          <article class="card">
+            <h3>还原原图地址</h3>
+            <p>
+              天猫的 <code>_430x430q90.jpg</code>、京东的
+              <code>!q70.dpg.webp</code>、拼多多的 <code>imageView2</code> 缩略参数会被去掉，
+              拿到的就是原图。
+            </p>
+          </article>
+          <article class="card">
+            <h3>统一转成 PNG</h3>
+            <p>
+              在 Service Worker 里用
+              <code>createImageBitmap</code> + <code>OffscreenCanvas</code> 转码，
+              不再受页面跨越限制，jpg / webp 一律输出 PNG。
+            </p>
+          </article>
+          <article class="card">
+            <h3>批量下载有进度</h3>
+            <p>
+              逐张显示「正在处理 3/12」，完成后给出成功与失败数量，
+              失败项会附上原因，便于单独重试。
+            </p>
+          </article>
+          <article class="card">
+            <h3>文件命名有规律</h3>
+            <p>
+              按勾选顺序命名为 <code>商品图_001.png</code>、<code>商品图_002.png</code>，
+              序号自动补零，排序不会错乱。
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ---------------------------------------------------------- 界面 -->
+      <section class="section section--tint" id="preview">
+        <div class="section__head">
+          <h2>界面预览</h2>
+          <p>悬浮按钮只在商品详情页出现，固定在右下角，不遮挡购买按钮。</p>
+        </div>
+
+        <div class="grid grid--2 shots">
+          <figure class="shot">
+            <img src="assets/button.png" alt="商品详情页右下角的「获取图片」悬浮按钮与结果面板" />
+            <figcaption>
+              <strong>1. 一键扫描</strong>
+              点击后先显示进度，随后弹出一张提示卡片，可以直接跳到图库。
+            </figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="assets/gallery.png" alt="图库页面：缩略图、尺寸标签与勾选框" />
+            <figcaption>
+              <strong>2. 勾选下载</strong>
+              每张图显示真实尺寸与格式，选中后立刻预览最终文件名。
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ---------------------------------------------------------- 安装 -->
+      <section class="section" id="install">
+        <div class="section__head">
+          <h2>三步装好</h2>
+          <p>插件是本地代码，不上传任何图片，也不需要登录第三方账号。</p>
+        </div>
+
+        <ol class="steps">
+          <li>
+            <span class="steps__num">1</span>
+            <div>
+              <h3>打开扩展管理页</h3>
+              <p>地址栏输入 <code>chrome://extensions</code>，回车。</p>
+            </div>
+          </li>
+          <li>
+            <span class="steps__num">2</span>
+            <div>
+              <h3>开启开发者模式</h3>
+              <p>打开页面右上角的「开发者模式」开关。</p>
+            </div>
+          </li>
+          <li>
+            <span class="steps__num">3</span>
+            <div>
+              <h3>加载已解压的扩展程序</h3>
+              <p>
+                点击「加载已解压的扩展程序」，选择本项目的
+                <code>extension</code> 目录即可。
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <div class="note">
+          <p>
+            <strong>开始使用：</strong> 打开任意商品详情页，右下角会出现「获取图片」按钮；
+            点击后图库会在新标签页打开。
+          </p>
+          <p>
+            <strong>提示：</strong> 详情页的长图往往需要向下滚动才会加载，
+            如果数量偏少，先滚动一遍页面再点一次。
+          </p>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------------ FAQ -->
+      <section class="section section--tint" id="faq">
+        <div class="section__head">
+          <h2>常见问题</h2>
+        </div>
+
+        <div class="faq">
+          <details>
+            <summary>为什么有些页面不显示按钮？</summary>
+            <p>
+              按钮只在商品详情页出现，列表页、搜索页、店铺首页都不会显示。
+              支持的地址形如 <code>item.taobao.com/item.htm?id=…</code>、
+              <code>item.jd.com/数字.html</code>、
+              <code>mobile.yangkeduo.com/goods.html?goods_id=…</code>。
+            </p>
+          </details>
+          <details>
+            <summary>提取到的图片数量比页面看到的少？</summary>
+            <p>
+              插件会剔除小于 100×100 的图片、图标和占位图。如果详情长图还没加载，
+              先滚动到页面底部再重新扫描一次。
+            </p>
+          </details>
+          <details>
+            <summary>下载失败了怎么办？</summary>
+            <p>
+              常见原因是 CDN 的防盗链或图片已被删除。失败项会在完成后给出原因，
+              可以在图库中取消勾选后重新下载其余图片。
+            </p>
+          </details>
+          <details>
+            <summary>图片会被上传到服务器吗？</summary>
+            <p>
+              不会。扫描、转换、保存都在本地浏览器内完成，插件没有任何后端接口，
+              也不收集任何使用数据。
+            </p>
+          </details>
+          <details>
+            <summary>文件名可以自定义吗？</summary>
+            <p>
+              目前固定为 <code>商品图_001.png</code> 这样的格式，按勾选顺序递增。
+              如需自定义，可修改 <code>extension/lib/image-utils.js</code> 中的
+              <code>makeFilename</code>。
+            </p>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <img src="assets/icon.png" alt="" width="24" height="24" />
+          <span>商品图片提取下载器</span>
+        </div>
+        <p class="footer__note">
+          © <span data-year>2026</span> 商品图片提取下载器 · 仅用于提取你有权使用的商品素材，
+          请遵守目标平台的服务条款与版权规定。
+        </p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
