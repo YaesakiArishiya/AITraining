@@ -1,44 +1,41 @@
-name: Deploy website to GitHub Pages
+name: Publish website to gh-pages
 
-# 只在官网或本工作流发生变化时重新发布，避免每次提交都触发
+# 官网发布：只要 image-extractor/docs 有变化，就把该目录同步到 gh-pages 分支
+# GitHub Pages 的 Source 为「Deploy from a branch → gh-pages → / (root)」
 on:
   push:
-    branches: [master, main]
+    branches: [main, master]
     paths:
       - "image-extractor/docs/**"
       - ".github/workflows/pages.yml"
+      - "README.md"
   workflow_dispatch:
 
-# GitHub Pages 部署所需的最小权限
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
-# 同一时间只保留一次发布，新的提交会取消排队中的旧任务
 concurrency:
-  group: pages
+  group: gh-pages
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  publish:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload static site
-        uses: actions/upload-pages-artifact@v3
         with:
-          # 官网根目录（含 index.html / css / js / assets）
-          path: image-extractor/docs
+          fetch-depth: 0
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Publish docs to gh-pages
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # 直接用 docs 目录的 tree 作为 gh-pages 的根目录，不产生工作区改动
+          tree=$(git rev-parse HEAD:image-extractor/docs)
+          commit=$(git commit-tree "$tree" -m "deploy: publish website from ${GITHUB_SHA::7}")
+          git push --force origin "$commit:refs/heads/gh-pages"
+
+          echo "已发布到 gh-pages：$commit"

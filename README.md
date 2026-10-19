@@ -34,7 +34,7 @@ node image-extractor/tools/serve.js 5179
 # http://localhost:5179/docs/
 ```
 
-官网通过 GitHub Actions 自动部署：推送到 `master` 且 `image-extractor/docs/` 有变化时，会重新发布到 GitHub Pages。
+官网通过 GitHub Actions 自动部署：推送到 `main` 且 `image-extractor/docs/` 有变化时，工作流会把该目录同步到 `gh-pages` 分支，由 GitHub Pages 对外发布。
 
 ## 免责声明
 
