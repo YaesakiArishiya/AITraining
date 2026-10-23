@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>云栖咖啡 · 单日销售看板</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">云</div>
+    <div class="brand-text">
+      <h1>云栖咖啡 · 中山路店</h1>
+      <p class="muted">自然日销售看板</p>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <a href="index.html" class="active">销售看板</a>
+    <a href="staff.html">员工工时</a>
+  </nav>
+
+  <div class="controls">
+    <button type="button" class="btn" id="prevDay" title="前一天">‹</button>
+    <input type="date" id="datePicker" aria-label="选择日期">
+    <button type="button" class="btn" id="nextDay" title="后一天">›</button>
+    <button type="button" class="btn primary" id="todayBtn">今天</button>
+  </div>
+</header>
+
+<main>
+  <section class="statusbar" id="statusBar"></section>
+
+  <section class="kpis" id="kpis"></section>
+
+  <section class="grid">
+    <div class="card span2">
+      <div class="card-head">
+        <div>
+          <h2>分时走势</h2>
+          <p class="muted" id="chartSub">按小时统计</p>
+        </div>
+        <div class="segmented" id="metricTabs">
+          <button type="button" data-metric="sales" class="active">销售额</button>
+          <button type="button" data-metric="orders">订单量</button>
+          <button type="button" data-metric="aov">客单价</button>
+        </div>
+      </div>
+      <div class="chart" id="hourChart"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>支付方式</h2>
+          <p class="muted">按销售额占比</p>
+        </div>
+      </div>
+      <div class="donut-wrap" id="paymentWrap"></div>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>分类销售</h2>
+          <p class="muted">按销售额占比</p>
+        </div>
+      </div>
+      <div class="cat-list" id="categoryList"></div>
+    </div>
+
+    <div class="card span2">
+      <div class="card-head">
+        <div>
+          <h2>热销商品</h2>
+          <p class="muted">当日销售额 Top 10</p>
+        </div>
+      </div>
+      <div class="table-wrap" id="productTable"></div>
+    </div>
+  </section>
+
+  <p class="footnote">
+    本页面所有数字均为演示用虚拟数据，按日期确定性生成（同一天每次打开结果一致），不代表真实经营情况。
+    门店自 2024-01-01 开业，早于该日期的日期没有数据。
+  </p>
+</main>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

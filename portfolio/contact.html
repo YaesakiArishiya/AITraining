@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>联系 · 朱泽恩</title>
+  <meta name="description" content="联系朱泽恩：聊项目、聊方案，或只是打个招呼。演示表单的内容只保存在本地浏览器中。" />
+  <meta name="theme-color" content="#0b0f1a" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/pages.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body id="top" data-page="contact">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <div class="starfield" aria-hidden="true"><canvas id="starfield"></canvas></div>
+
+  <header class="site-header" id="siteHeader">
+    <div class="container nav__inner">
+      <a class="brand" href="index.html" aria-label="朱泽恩 · 首页" data-brand-link>
+        <span class="brand__mark" aria-hidden="true" data-site="initials">ZZ</span>
+        <span class="brand__text">
+          <strong data-site="name">朱泽恩</strong>
+          <small data-site="brandRole">Frontend Dev</small>
+        </span>
+      </a>
+
+      <nav class="nav" id="primaryNav" aria-label="主导航">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html">首页</a></li>
+          <li><a class="nav__link" href="projects.html">项目</a></li>
+          <li><a class="nav__link" href="blog.html">博客</a></li>
+          <li><a class="nav__link" href="about.html">关于</a></li>
+        </ul>
+        <a class="btn btn--primary btn--sm nav__cta" href="contact.html" aria-current="page">联系我</a>
+      </nav>
+
+      <button class="nav-toggle" id="navToggle" type="button" aria-label="打开菜单" aria-controls="primaryNav" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main" class="site-main">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="面包屑" style="padding-top:1.5rem">
+        <a href="index.html">首页</a>
+        <span class="breadcrumb__sep" aria-hidden="true">/</span>
+        <span aria-current="page">联系</span>
+      </nav>
+    </div>
+
+    <header class="page-hero" style="border-bottom:0;padding-top:1rem">
+      <div class="container">
+        <span class="eyebrow">联系</span>
+        <h1 class="page-title">说说你想做的东西</h1>
+        <p class="page-desc">
+          项目需求、合作邀请，或者只是对某篇文章有疑问，都可以用这个表单。通常 1 天内回复。
+        </p>
+      </div>
+    </header>
+
+    <section class="section" style="padding-top:clamp(1.5rem,4vw,2.5rem)">
+      <div class="container">
+        <div class="contact-grid">
+          <div class="form-card">
+            <form id="contactForm" novalidate>
+              <div class="form-card__row">
+                <div class="field">
+                  <label class="field__label" for="name">称呼<span class="req" aria-hidden="true">*</span></label>
+                  <input class="input" id="name" name="name" type="text" autocomplete="name" placeholder="怎么称呼你？" aria-describedby="nameError" />
+                  <p class="field__error" id="nameError"></p>
+                </div>
+                <div class="field">
+                  <label class="field__label" for="email">邮箱<span class="req" aria-hidden="true">*</span></label>
+                  <input class="input" id="email" name="email" type="email" autocomplete="email" placeholder="name@example.com" aria-describedby="emailError" />
+                  <p class="field__error" id="emailError"></p>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="topic">主题</label>
+                <select class="select" id="topic" name="topic">
+                  <option value="project">有一个项目想做</option>
+                  <option value="collab">合作 / 长期伙伴</option>
+                  <option value="question">对文章有疑问</option>
+                  <option value="hello">只是打个招呼</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="message">想说的内容<span class="req" aria-hidden="true">*</span></label>
+                <textarea class="textarea" id="message" name="message" placeholder="想解决什么问题？现在卡在哪一步？" aria-describedby="messageError messageHint"></textarea>
+                <p class="field__error" id="messageError"></p>
+                <p class="field__hint" id="messageHint">至少 10 个字。 <span id="messageCount">0 / 1000</span></p>
+              </div>
+
+              <div class="field">
+                <label class="check" for="consent">
+                  <input type="checkbox" id="consent" name="consent" aria-describedby="consentError" />
+                  <span>我知道这是演示表单，内容只保存在当前浏览器里。</span>
+                </label>
+                <p class="field__error" id="consentError"></p>
+              </div>
+
+              <div class="form-status" id="formStatus" role="status" aria-live="polite" tabindex="-1"></div>
+
+              <div class="form-card__foot">
+                <p class="field__hint" id="formHint">不会发送到任何服务器，也不会收集邮箱。</p>
+                <button class="btn btn--primary" type="submit">发送消息</button>
+              </div>
+            </form>
+          </div>
+
+          <aside class="info-card">
+            <div>
+              <h2 style="font-size:1.05rem">直接联系</h2>
+              <p class="muted" style="margin-top:.4rem;font-size:.87rem">
+                不喜欢填表也没关系，邮件和 GitHub 都开着。
+              </p>
+            </div>
+
+            <dl class="info-list">
+              <li>
+                <dt>邮箱</dt>
+                <dd><a href="mailto:hello@zhuezen.dev" data-site="email">hello@zhuezen.dev</a></dd>
+              </li>
+              <li>
+                <dt>GitHub</dt>
+                <dd><a href="https://github.com/yaesakiarishiya" target="_blank" rel="noopener">@yaesakiarishiya</a></dd>
+              </li>
+              <li>
+                <dt>所在地</dt>
+                <dd><span class="info-list__value">杭州 · 中国（UTC+8）</span></dd>
+              </li>
+              <li>
+                <dt>回复时间</dt>
+                <dd><span class="info-list__value">通常 1 个工作日内</span></dd>
+              </li>
+            </dl>
+
+            <div class="hours">
+              <p>目前状态</p>
+              <span>接新的前端项目 · 11 月起可排期</span>
+              <p style="margin-top:.5rem">适合找我的事情</p>
+              <span>落地页 / 数据看板 / 浏览器扩展 / 可访问性改造</span>
+            </div>
+
+            <div class="callout">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+              <p>这个表单是站点的一部分：校验、错误提示和提交反馈都真实可用，但记录只写进浏览器的 localStorage。</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <span class="brand__mark" aria-hidden="true" data-site="initials">ZZ</span>
+          <div>
+            <strong data-site="name-latin">朱泽恩 · Zhu Ze'en</strong>
+            <p data-site="footerBio">前端开发者。做浏览器扩展、数据看板和本地优先的小工具。</p>
+          </div>
+        </div>
+        <div>
+          <p class="footer__title">导航</p>
+          <ul class="footer__list">
+            <li><a href="projects.html">项目</a></li>
+            <li><a href="blog.html">博客</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><a href="contact.html">联系</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer__title">联系</p>
+          <ul class="footer__list">
+            <li><a href="mailto:hello@zhuezen.dev" data-site="email">hello@zhuezen.dev</a></li>
+            <li><a href="https://github.com/yaesakiarishiya" target="_blank" rel="noopener">GitHub</a></li>
+            <li><a href="https://github.com/yaesakiarishiya/AITraining" target="_blank" rel="noopener">项目源码</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>© <span id="year">2026</span> <span data-site="name">朱泽恩</span> · 本站无框架、无 CDN，可离线阅读</p>
+        <div class="footer__meta"><a class="to-top" href="admin.html">内容后台</a><a class="to-top" href="#top">回到顶部 ↑</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/content.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

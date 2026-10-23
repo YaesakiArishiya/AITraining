@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>项目 · 朱泽恩</title>
+  <meta name="description" content="朱泽恩的项目：图提取 ImageGrab 浏览器扩展、门店经营数据看板，以及这个零依赖的作品集站点。" />
+  <meta name="theme-color" content="#0b0f1a" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/pages.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body id="top" data-page="projects">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <div class="starfield" aria-hidden="true"><canvas id="starfield"></canvas></div>
+
+  <header class="site-header" id="siteHeader">
+    <div class="container nav__inner">
+      <a class="brand" href="index.html" aria-label="朱泽恩 · 首页" data-brand-link>
+        <span class="brand__mark" aria-hidden="true" data-site="initials">ZZ</span>
+        <span class="brand__text">
+          <strong data-site="name">朱泽恩</strong>
+          <small data-site="brandRole">Frontend Dev</small>
+        </span>
+      </a>
+
+      <nav class="nav" id="primaryNav" aria-label="主导航">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html">首页</a></li>
+          <li><a class="nav__link is-active" href="projects.html" aria-current="page">项目</a></li>
+          <li><a class="nav__link" href="blog.html">博客</a></li>
+          <li><a class="nav__link" href="about.html">关于</a></li>
+        </ul>
+        <a class="btn btn--primary btn--sm nav__cta" href="contact.html">联系我</a>
+      </nav>
+
+      <button class="nav-toggle" id="navToggle" type="button" aria-label="打开菜单" aria-controls="primaryNav" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main" class="site-main">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="面包屑" style="padding-top:1.5rem">
+        <a href="index.html">首页</a>
+        <span class="breadcrumb__sep" aria-hidden="true">/</span>
+        <span aria-current="page">项目</span>
+      </nav>
+    </div>
+
+    <header class="page-hero" style="border-bottom:0;padding-top:1rem">
+      <div class="container">
+        <span class="eyebrow">项目</span>
+        <h1 class="page-title">三个做完的项目，<br class="br-mobile" />和它们背后的取舍</h1>
+        <p class="page-desc">
+          每个项目都从一句需求开始。我把它们拆成问题、做法、功能和复盘四部分，
+          你可以先看结论，也可以点进详情看具体实现。
+        </p>
+      </div>
+    </header>
+
+    <section class="section" style="padding-top:clamp(1.5rem,4vw,2.5rem)">
+      <div class="container">
+        <div class="filter-bar" id="projectFilters" role="group" aria-label="按类型筛选项目"></div>
+        <p class="result-count" id="projectCount" aria-live="polite" style="margin-bottom:1.25rem"></p>
+
+        <h2 class="sr-only">项目列表</h2>
+        <div class="projects-list" id="projectList"></div>
+
+        <noscript>
+          <div class="empty">
+            <h3>需要 JavaScript 才能显示项目列表</h3>
+            <p>你也可以直接在 GitHub 上浏览源码：<a class="link" href="https://github.com/yaesakiarishiya/AITraining">AITraining 仓库</a>。</p>
+          </div>
+        </noscript>
+      </div>
+    </section>
+
+    <section class="section section--tight">
+      <div class="container">
+        <div class="cta-banner reveal">
+          <div>
+            <h2>想看看代码本身？</h2>
+            <p>所有项目的源码、测试与说明都在同一个仓库里，欢迎提 issue 或直接发邮件。</p>
+          </div>
+          <div class="cta-banner__actions">
+            <a class="btn btn--primary btn--lg" href="https://github.com/yaesakiarishiya/AITraining" target="_blank" rel="noopener">打开 GitHub</a>
+            <a class="btn btn--ghost btn--lg" href="contact.html">联系我</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <span class="brand__mark" aria-hidden="true" data-site="initials">ZZ</span>
+          <div>
+            <strong data-site="name-latin">朱泽恩 · Zhu Ze'en</strong>
+            <p data-site="footerBio">前端开发者。做浏览器扩展、数据看板和本地优先的小工具。</p>
+          </div>
+        </div>
+        <div>
+          <p class="footer__title">导航</p>
+          <ul class="footer__list">
+            <li><a href="projects.html">项目</a></li>
+            <li><a href="blog.html">博客</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><a href="contact.html">联系</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer__title">联系</p>
+          <ul class="footer__list">
+            <li><a href="mailto:hello@zhuezen.dev" data-site="email">hello@zhuezen.dev</a></li>
+            <li><a href="https://github.com/yaesakiarishiya" target="_blank" rel="noopener">GitHub</a></li>
+            <li><a href="https://github.com/yaesakiarishiya/AITraining" target="_blank" rel="noopener">项目源码</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>© <span id="year">2026</span> <span data-site="name">朱泽恩</span> · 本站无框架、无 CDN，可离线阅读</p>
+        <div class="footer__meta"><a class="to-top" href="admin.html">内容后台</a><a class="to-top" href="#top">回到顶部 ↑</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/content.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

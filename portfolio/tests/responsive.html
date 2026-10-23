@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>响应式与可访问性自检 · 作品集</title>
+  <style>
+    body { margin: 0; font: 14px/1.6 ui-monospace, Menlo, Consolas, monospace; background: #0b0f1a; color: #e6eaf2; }
+    header { padding: 12px 16px; border-bottom: 1px solid #222c40; }
+    #out { padding: 16px; white-space: pre-wrap; }
+    .ok { color: #5ee7a0; }
+    .bad { color: #ff8b8b; }
+    iframe { border: 1px solid #2a3550; }
+    #stage { position: fixed; left: -9999px; top: 0; }
+  </style>
+</head>
+<body>
+  <header>响应式自检 · 依次在 375 / 768 / 1440 宽度下加载页面并测量</header>
+  <div id="stage"></div>
+  <pre id="out">运行中…</pre>
+
+  <script>
+    const pages = ["index.html", "projects.html", "blog.html", "about.html", "contact.html",
+                   "project.html?id=imagegrab", "post.html?slug=manifest-v3-image-grab"];
+    const widths = [375, 768, 1440];
+    const out = document.getElementById("out");
+    const stage = document.getElementById("stage");
+    const lines = [];
+
+    function loadFrame(src, width, height) {
+      return new Promise((resolve) => {
+        const frame = document.createElement("iframe");
+        frame.width = width;
+        frame.height = height;
+        frame.src = src;
+        frame.onload = () => resolve(frame);
+        stage.appendChild(frame);
+      });
+    }
+
+    function measure(frame, width) {
+      const doc = frame.contentDocument;
+      const win = frame.contentWindow;
+      const html = doc.documentElement;
+      const viewport = html.clientWidth;
+      const problems = [];
+
+      // 1. 整页是否横向溢出
+      if (html.scrollWidth > viewport + 1) {
+        problems.push(`页面横向溢出 ${html.scrollWidth - viewport}px`);
+      }
+
+      // 2. 找出超出视口右边界的元素（忽略可横向滚动的容器内部）
+      const offenders = [];
+      const insideScroller = (el) => {
+        let node = el.parentElement;
+        while (node && node !== doc.body) {
+          const style = win.getComputedStyle(node);
+          if (style.overflowX === "auto" || style.overflowX === "scroll" || style.overflow === "hidden") return true;
+          node = node.parentElement;
+        }
+        return false;
+      };
+      doc.querySelectorAll("body *").forEach((el) => {
+        const style = win.getComputedStyle(el);
+        if (style.position === "fixed" || style.display === "none" || style.visibility === "hidden") return;
+        const rect = el.getBoundingClientRect();
+        if (rect.width === 0) return;
+        if (rect.right > viewport + 1 && !insideScroller(el)) {
+          offenders.push(`${el.tagName.toLowerCase()}.${(el.className || "").toString().split(" ")[0]} -> ${Math.round(rect.right)}px`);
+        }
+      });
+      if (offenders.length) problems.push(`超出视口: ${offenders.slice(0, 4).join(" | ")}`);
+
+      // 3. 网格列数
+      const grid = doc.querySelector("#featuredProjects, #projectList, .about-values");
+      const cols = grid ? win.getComputedStyle(grid).gridTemplateColumns.split(" ").filter(Boolean).length : "-";
+
+      // 4. 导航形态
+      const nav = doc.querySelector("#primaryNav");
+      const toggle = doc.querySelector("#navToggle");
+      const navVisible = nav && win.getComputedStyle(nav).visibility !== "hidden";
+      const toggleVisible = toggle && win.getComputedStyle(toggle).display !== "none";
+
+      // 5. 关键内容是否渲染出来
+      const cards = doc.querySelectorAll(".card, .post-row, .timeline__item").length;
+
+      // 6. 触控目标尺寸（导航按钮）
+      let smallTarget = 0;
+      doc.querySelectorAll("a.nav__link, button, .btn").forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.width < 40 && rect.height > 0) smallTarget += 1;
+      });
+
+      return {
+        width,
+        overflow: html.scrollWidth - width,
+        offenders,
+        cols,
+        navVisible,
+        toggleVisible,
+        cards,
+        smallTarget,
+        problems,
+      };
+    }
+
+    (async () => {
+      const target = new URLSearchParams(location.search).get("page") || "index.html";
+      const pageList = target === "all" ? pages : [target];
+
+      for (const page of pageList) {
+        for (const width of widths) {
+          const frame = await loadFrame(`../${page}`, width, 900);
+          await new Promise((r) => setTimeout(r, 350));
+          const result = measure(frame, width);
+          const tag = result.problems.length ? "BAD" : "OK ";
+          lines.push(
+            `${tag} ${page.padEnd(48)} ${String(width).padStart(4)}px  cols=${result.cols}  nav=${result.navVisible ? "inline" : "panel"}  cards=${result.cards}  overflow=${result.overflow}px  smallTargets=${result.smallTarget}` +
+              (result.problems.length ? `\n     -> ${result.problems.join("\n     -> ")}` : "")
+          );
+          out.textContent = lines.join("\n");
+          frame.remove();
+          document.title = `done-${lines.length}`;
+        }
+      }
+      window.__RESULT__ = lines.join("\n");
+      out.textContent = lines.join("\n") + "\n\n完成。";
+      document.title = "done";
+    })();
+  </script>
+</body>
+</html>

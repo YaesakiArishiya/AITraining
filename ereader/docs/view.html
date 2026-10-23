@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>项目文档 · 页间</title>
+<meta name="description" content="页间的需求文档、技术方案与协作说明：只读展示仓库里的 Markdown 原文。" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%233f6fd8'/%3E%3Cpath d='M9 8h6a3 3 0 013 3v13a3 3 0 00-3-3H9zm14 0h-4v13h4z' fill='%23fff' opacity='.92'/%3E%3C/svg%3E" />
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --panel: #ffffff;
+    --panel-2: #f3f1ec;
+    --line: #e6e2d9;
+    --line-strong: #d5cfc2;
+    --text: #1e1c18;
+    --text-2: #45403a;
+    --muted: #6f685e;
+    --muted-2: #8c857a;
+    --accent: #3f6fd8;
+    --accent-soft: rgba(63, 111, 216, 0.08);
+    --ok: #2f8f5b;
+    --radius: 12px;
+    --font: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 8px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: var(--panel);
+    color: var(--accent);
+    z-index: 40;
+  }
+  .skip-link:focus { left: 16px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px clamp(16px, 3vw, 32px);
+    border-bottom: 1px solid var(--line);
+    background: rgba(251, 250, 247, 0.92);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); }
+  .brand:hover { text-decoration: none; }
+  .brand__mark {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .brand strong { display: block; font-size: 14px; }
+  .brand small { color: var(--muted-2); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .topbar__links { display: flex; align-items: center; gap: 14px; font-size: 13px; color: var(--muted); }
+  .topbar__links a { color: var(--muted); }
+  .topbar__links a:hover { color: var(--text); }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 268px minmax(0, 1fr);
+    gap: clamp(24px, 4vw, 56px);
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: clamp(24px, 4vw, 48px) clamp(16px, 3vw, 32px) 80px;
+  }
+
+  .side { position: sticky; top: 88px; align-self: start; }
+  .side__title {
+    margin: 0 0 12px;
+    color: var(--muted-2);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .side__nav { display: flex; flex-direction: column; gap: 6px; }
+  .side__link {
+    display: block;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    color: var(--text-2);
+  }
+  .side__link:hover { border-color: var(--line-strong); text-decoration: none; }
+  .side__link.is-active { border-color: rgba(63, 111, 216, 0.35); background: var(--accent-soft); }
+  .side__link strong { display: block; color: var(--text); font-size: 14px; }
+  .side__link span { color: var(--muted-2); font-size: 12px; }
+
+  .meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 18px;
+    color: var(--muted-2);
+    font-size: 12px;
+  }
+  .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .meta span::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--ok); }
+
+  .doc { min-width: 0; max-width: 860px; }
+  .doc__head { margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+  .doc__eyebrow { color: var(--accent); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; }
+  .doc__title { margin: 6px 0 8px; font-size: clamp(26px, 3vw, 34px); letter-spacing: -0.02em; line-height: 1.25; }
+  .doc__desc { margin: 0; color: var(--muted); }
+  .doc__pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .pill {
+    padding: 3px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--panel);
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .prose h1, .prose h2, .prose h3, .prose h4 { line-height: 1.4; letter-spacing: -0.01em; }
+  .prose h2 { margin: 36px 0 12px; padding-top: 8px; font-size: 21px; border-top: 1px solid var(--line); }
+  .prose h3 { margin: 24px 0 8px; font-size: 16px; }
+  .prose h4 { margin: 18px 0 6px; font-size: 15px; color: var(--text-2); }
+  .prose p { margin: 10px 0 14px; color: var(--text-2); }
+  .prose ul, .prose ol { margin: 8px 0 16px; padding-left: 22px; color: var(--text-2); }
+  .prose li { margin: 5px 0; }
+  .prose li::marker { color: var(--accent); }
+  .prose strong { color: var(--text); }
+  .prose code {
+    padding: 2px 6px;
+    border-radius: 5px;
+    background: var(--panel-2);
+    color: #24407f;
+    font-family: var(--mono);
+    font-size: 0.88em;
+  }
+  .prose pre {
+    margin: 14px 0 18px;
+    padding: 16px 18px;
+    overflow: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: #f6f4ef;
+    line-height: 1.7;
+  }
+  .prose pre code { padding: 0; background: none; color: var(--text-2); font-size: 0.84rem; }
+  .prose blockquote {
+    margin: 16px 0;
+    padding: 10px 16px;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    background: var(--accent-soft);
+    color: var(--text-2);
+  }
+  .prose table {
+    width: 100%;
+    margin: 14px 0 20px;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .prose th, .prose td {
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+  .prose th { background: var(--panel-2); color: var(--text); font-weight: 600; }
+  .prose td { color: var(--text-2); }
+  .prose hr { margin: 32px 0; border: 0; border-top: 1px solid var(--line); }
+  .prose .check { margin-right: 6px; color: var(--ok); font-weight: 700; }
+
+  .doc__foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 48px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    color: var(--muted-2);
+    font-size: 13px;
+  }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .side { position: static; }
+    .side__nav { flex-direction: row; flex-wrap: wrap; }
+    .side__link { flex: 1 1 180px; }
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#doc-body">跳到文档正文</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand__mark" aria-hidden="true">页</span>
+    <span>
+      <strong>页间 · 项目文档</strong>
+      <small>Docs</small>
+    </span>
+  </a>
+  <nav class="topbar__links" aria-label="快捷链接">
+    <a href="../index.html">返回书架</a>
+    <a href="../samples/夜航.txt">夜航.txt</a>
+    <a href="../samples/山中来信.epub">山中来信.epub</a>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside class="side">
+    <p class="side__title">文档</p>
+    <nav class="side__nav" aria-label="文档列表">
+      <a class="side__link" href="?doc=PRD" data-doc="PRD">
+        <strong>PRD · 需求文档</strong>
+        <span>目标、范围、迭代记录与验收</span>
+      </a>
+      <a class="side__link" href="?doc=TECH_DESIGN" data-doc="TECH_DESIGN">
+        <strong>TECH_DESIGN · 技术方案</strong>
+        <span>ZIP、OPF、TXT 解析与存储方案</span>
+      </a>
+      <a class="side__link" href="?doc=AGENTS" data-doc="AGENTS">
+        <strong>AGENTS · 协作说明</strong>
+        <span>约定、命令、验收清单与禁区</span>
+      </a>
+    </nav>
+    <div class="meta">
+      <span>Markdown 源文件</span>
+      <span>与代码一起版本管理</span>
+    </div>
+  </aside>
+
+  <main class="doc">
+    <div class="doc__head">
+      <p class="doc__eyebrow" id="doc-eyebrow">PRD</p>
+      <h1 class="doc__title" id="doc-title">电子书阅读器需求文档</h1>
+      <p class="doc__desc" id="doc-desc">加载中…</p>
+      <div class="doc__pills" id="doc-pills"></div>
+    </div>
+    <article class="prose" id="doc-body">
+      <p>正在读取文档…</p>
+    </article>
+    <footer class="doc__foot">
+      <span>页间 · 本地电子书阅读器</span>
+      <span>最后更新：2026-10-21</span>
+    </footer>
+  </main>
+</div>
+
+<script>
+  (function () {
+    "use strict";
+
+    var DOCS = {
+      PRD: {
+        file: "PRD.md",
+        eyebrow: "Product Requirement Document",
+        title: "电子书阅读器 PRD",
+        desc: "定义「页间」要解决的问题、本期范围、两种格式的导入口径，以及可验收的标准。",
+        pills: ["v0.2", "EPUB + TXT", "8 项 P0"]
+      },
+      TECH_DESIGN: {
+        file: "TECH_DESIGN.md",
+        eyebrow: "Technical Design",
+        title: "电子书阅读器技术方案",
+        desc: "记录零依赖的 ZIP / OPF / TXT 解析路径、位置锚点与存储方案，以及 v1 与目标的差异。",
+        pills: ["零依赖", "DecompressionStream", "位置锚点"]
+      },
+      AGENTS: {
+        file: "../AGENTS.md",
+        eyebrow: "Agent Guide",
+        title: "页间 · 协作说明",
+        desc: "给 AI 代理与协作者的硬性约定、常用命令、验收清单和禁区。",
+        pills: ["无构建", "手动验收", "文档优先"]
+      }
+    };
+
+    var params = new URLSearchParams(location.search);
+    var key = DOCS[params.get("doc")] ? params.get("doc") : "PRD";
+    var config = DOCS[key];
+
+    document.title = config.title + " · 页间";
+    document.getElementById("doc-eyebrow").textContent = config.eyebrow;
+    document.getElementById("doc-title").textContent = config.title;
+    document.getElementById("doc-desc").textContent = config.desc;
+
+    var pills = document.getElementById("doc-pills");
+    config.pills.forEach(function (text) {
+      var span = document.createElement("span");
+      span.className = "pill";
+      span.textContent = text;
+      pills.appendChild(span);
+    });
+
+    Array.prototype.forEach.call(document.querySelectorAll("[data-doc]"), function (link) {
+      var active = link.dataset.doc === key;
+      link.classList.toggle("is-active", active);
+      if (active) link.setAttribute("aria-current", "page");
+    });
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, function (char) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char];
+      });
+    }
+
+    function inline(text) {
+      var html = escapeHtml(text);
+      html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+      html = html.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+      html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function (match, label, href) {
+        var safe = /^(https?:|mailto:|\.{0,2}\/|#)/.test(href) ? href : "#";
+        return '<a href="' + safe + '">' + label + "</a>";
+      });
+      return html;
+    }
+
+    function cells(row) {
+      return row
+        .trim()
+        .replace(/^\|/, "")
+        .replace(/\|$/, "")
+        .split("|")
+        .map(function (cell) {
+          return cell.trim();
+        });
+    }
+
+    function render(markdown) {
+      var lines = markdown.replace(/\r\n/g, "\n").split("\n");
+      var out = [];
+      var i = 0;
+
+      while (i < lines.length) {
+        var line = lines[i];
+
+        if (!line.trim()) {
+          i += 1;
+          continue;
+        }
+
+        if (/^```/.test(line)) {
+          var lang = line.replace(/^```/, "").trim();
+          var buffer = [];
+          i += 1;
+          while (i < lines.length && !/^```/.test(lines[i])) {
+            buffer.push(lines[i]);
+            i += 1;
+          }
+          i += 1;
+          out.push(
+            '<pre><code' +
+              (lang ? ' class="language-' + escapeHtml(lang) + '"' : "") +
+              ">" +
+              escapeHtml(buffer.join("\n")) +
+              "</code></pre>"
+          );
+          continue;
+        }
+
+        var heading = line.match(/^(#{1,6})\s+(.*)$/);
+        if (heading) {
+          var level = heading[1].length;
+          i += 1;
+          // 页头已经有一个 h1，Markdown 里的一级标题只说明文档名，不再重复渲染
+          if (level === 1) continue;
+          out.push("<h" + level + ">" + inline(heading[2]) + "</h" + level + ">");
+          continue;
+        }
+
+        if (/^---+$/.test(line.trim())) {
+          out.push("<hr />");
+          i += 1;
+          continue;
+        }
+
+        if (/^>\s?/.test(line)) {
+          var quoted = [];
+          while (i < lines.length && /^>\s?/.test(lines[i])) {
+            quoted.push(lines[i].replace(/^>\s?/, ""));
+            i += 1;
+          }
+          out.push("<blockquote><p>" + inline(quoted.join(" ")) + "</p></blockquote>");
+          continue;
+        }
+
+        if (line.indexOf("|") !== -1 && i + 1 < lines.length && /^\s*\|?[\s:-]+\|[\s:|-]*$/.test(lines[i + 1])) {
+          var head = cells(line);
+          i += 2;
+          var rows = [];
+          while (i < lines.length && lines[i].indexOf("|") !== -1 && lines[i].trim()) {
+            rows.push(cells(lines[i]));
+            i += 1;
+          }
+          out.push(
+            "<table><thead><tr>" +
+              head
+                .map(function (cell) {
+                  return "<th>" + inline(cell) + "</th>";
+                })
+                .join("") +
+              "</tr></thead><tbody>" +
+              rows
+                .map(function (row) {
+                  return (
+                    "<tr>" +
+                    row
+                      .map(function (cell) {
+                        return "<td>" + inline(cell) + "</td>";
+                      })
+                      .join("") +
+                    "</tr>"
+                  );
+                })
+                .join("") +
+              "</tbody></table>"
+          );
+          continue;
+        }
+
+        if (/^[-*]\s+/.test(line) || /^\d+\.\s+/.test(line)) {
+          var ordered = /^\d+\.\s+/.test(line);
+          var items = [];
+          while (i < lines.length && (ordered ? /^\d+\.\s+/.test(lines[i]) : /^[-*]\s+/.test(lines[i]))) {
+            var text = lines[i].replace(/^[-*]\s+/, "").replace(/^\d+\.\s+/, "");
+            var prefix = "";
+            if (/^\[[ xX]\]\s+/.test(text)) {
+              var checked = /^\[[xX]\]/.test(text);
+              prefix =
+                '<span class="check" role="img" aria-label="' +
+                (checked ? "已完成" : "未完成") +
+                '">' +
+                (checked ? "✓" : "○") +
+                "</span>";
+              text = text.replace(/^\[[ xX]\]\s+/, "");
+            }
+            items.push("<li>" + prefix + inline(text) + "</li>");
+            i += 1;
+          }
+          out.push("<" + (ordered ? "ol" : "ul") + ">" + items.join("") + "</" + (ordered ? "ol" : "ul") + ">");
+          continue;
+        }
+
+        var para = [line];
+        i += 1;
+        while (
+          i < lines.length &&
+          lines[i].trim() &&
+          !/^(#{1,6}\s|```|>|[-*]\s|\d+\.\s|---)/.test(lines[i]) &&
+          !(lines[i].indexOf("|") !== -1 && i + 1 < lines.length && /^\s*\|?[\s:-]+\|/.test(lines[i + 1]))
+        ) {
+          para.push(lines[i]);
+          i += 1;
+        }
+        out.push("<p>" + inline(para.join(" ")) + "</p>");
+      }
+
+      return out.join("\n");
+    }
+
+    fetch(config.file)
+      .then(function (response) {
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        return response.text();
+      })
+      .then(function (markdown) {
+        document.getElementById("doc-body").innerHTML = render(markdown);
+      })
+      .catch(function (error) {
+        document.getElementById("doc-body").innerHTML =
+          '<p>文档加载失败：' + escapeHtml(error.message) + "。请通过本地服务器访问本页。</p>";
+      });
+  })();
+</script>
+</body>
+</html>

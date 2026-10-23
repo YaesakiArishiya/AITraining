@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>项目详情 · 朱泽恩</title>
+  <meta name="description" content="朱泽恩的项目详情：要解决的问题、具体做法、主要功能与事后复盘。" />
+  <meta name="theme-color" content="#0b0f1a" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/pages.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body id="top" data-page="project">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <div class="starfield" aria-hidden="true"><canvas id="starfield"></canvas></div>
+
+  <header class="site-header" id="siteHeader">
+    <div class="container nav__inner">
+      <a class="brand" href="index.html" aria-label="朱泽恩 · 首页" data-brand-link>
+        <span class="brand__mark" aria-hidden="true" data-site="initials">ZZ</span>
+        <span class="brand__text">
+          <strong data-site="name">朱泽恩</strong>
+          <small data-site="brandRole">Frontend Dev</small>
+        </span>
+      </a>
+
+      <nav class="nav" id="primaryNav" aria-label="主导航">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html">首页</a></li>
+          <li><a class="nav__link is-active" href="projects.html" aria-current="page">项目</a></li>
+          <li><a class="nav__link" href="blog.html">博客</a></li>
+          <li><a class="nav__link" href="about.html">关于</a></li>
+        </ul>
+        <a class="btn btn--primary btn--sm nav__cta" href="contact.html">联系我</a>
+      </nav>
+
+      <button class="nav-toggle" id="navToggle" type="button" aria-label="打开菜单" aria-controls="primaryNav" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main" class="site-main">
+    <div id="projectRoot">
+      <div class="container" style="padding-block:4rem">
+        <div class="empty">
+          <h3>正在加载项目详情…</h3>
+          <p>如果没有自动跳转，请<a class="link" href="projects.html">返回项目列表</a>。</p>
+        </div>
+      </div>
+    </div>
+
+    <noscript>
+      <div class="container" style="padding-block:3rem">
+        <div class="empty">
+          <h3>需要 JavaScript 才能显示项目详情</h3>
+          <p>请在项目列表中选择项目，或直接访问 <a class="link" href="https://github.com/yaesakiarishiya/AITraining">GitHub 仓库</a>。</p>
+        </div>
+      </div>
+    </noscript>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <span class="brand__mark" aria-hidden="true" data-site="initials">ZZ</span>
+          <div>
+            <strong data-site="name-latin">朱泽恩 · Zhu Ze'en</strong>
+            <p data-site="footerBio">前端开发者。做浏览器扩展、数据看板和本地优先的小工具。</p>
+          </div>
+        </div>
+        <div>
+          <p class="footer__title">导航</p>
+          <ul class="footer__list">
+            <li><a href="projects.html">项目</a></li>
+            <li><a href="blog.html">博客</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><a href="contact.html">联系</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer__title">联系</p>
+          <ul class="footer__list">
+            <li><a href="mailto:hello@zhuezen.dev" data-site="email">hello@zhuezen.dev</a></li>
+            <li><a href="https://github.com/yaesakiarishiya" target="_blank" rel="noopener">GitHub</a></li>
+            <li><a href="https://github.com/yaesakiarishiya/AITraining" target="_blank" rel="noopener">项目源码</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>© <span id="year">2026</span> <span data-site="name">朱泽恩</span> · 本站无框架、无 CDN，可离线阅读</p>
+        <div class="footer__meta"><a class="to-top" href="admin.html">内容后台</a><a class="to-top" href="#top">回到顶部 ↑</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/content.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

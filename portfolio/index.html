@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>朱泽恩 · 把想法做成能用的小工具</title>
+  <meta name="description" content="朱泽恩的个人作品集与博客：浏览器扩展、数据可视化与本地优先的效率工具，附开发笔记与踩坑记录。" />
+  <meta name="theme-color" content="#0b0f1a" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/pages.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body id="top" data-page="home">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <div class="starfield" aria-hidden="true"><canvas id="starfield"></canvas></div>
+
+  <!-- ============================================================ 顶部导航 -->
+  <header class="site-header" id="siteHeader">
+    <div class="container nav__inner">
+      <a class="brand" href="index.html" aria-label="朱泽恩 · 首页" data-brand-link>
+        <span class="brand__mark" aria-hidden="true" data-site="initials">ZZ</span>
+        <span class="brand__text">
+          <strong data-site="name">朱泽恩</strong>
+          <small data-site="brandRole">Frontend Dev</small>
+        </span>
+      </a>
+
+      <nav class="nav" id="primaryNav" aria-label="主导航">
+        <ul class="nav__list">
+          <li><a class="nav__link is-active" href="index.html" aria-current="page">首页</a></li>
+          <li><a class="nav__link" href="projects.html">项目</a></li>
+          <li><a class="nav__link" href="blog.html">博客</a></li>
+          <li><a class="nav__link" href="about.html">关于</a></li>
+        </ul>
+        <a class="btn btn--primary btn--sm nav__cta" href="contact.html">联系我</a>
+      </nav>
+
+      <button class="nav-toggle" id="navToggle" type="button" aria-label="打开菜单" aria-controls="primaryNav" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main" class="site-main">
+    <!-- ============================================================== Hero -->
+    <section class="hero">
+      <div class="container hero__grid">
+        <div class="hero__copy">
+          <span class="eyebrow">
+            <span class="dot" aria-hidden="true"></span>
+            <span data-site="availability">可接受新的合作</span>
+          </span>
+          <h1 class="hero__title">
+            把想法做成<br />
+            <span class="gradient-text">能用的小工具</span>
+          </h1>
+          <p class="hero__desc" data-site="intro">
+            我是朱泽恩，一名前端开发者。做过浏览器扩展、门店数据看板和一整套本地优先的效率工具。
+            我关心的是：它能不能真的被用起来，而不是只在截图里好看。
+          </p>
+
+          <div class="hero__actions">
+            <a class="btn btn--primary btn--lg" href="projects.html">
+              查看项目
+              <svg class="btn__icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a class="btn btn--ghost btn--lg" href="blog.html">读点笔记</a>
+          </div>
+
+          <ul class="hero__meta">
+            <li>
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+              <span data-site="location">杭州 · 中国</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+              前端 / 全栈
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              通常 1 天内回复
+            </li>
+          </ul>
+
+          <ul class="hero__facts">
+            <li><strong>3</strong><span>完成的项目</span></li>
+            <li><strong>5</strong><span>篇开发笔记</span></li>
+            <li><strong>0</strong><span>运行时依赖</span></li>
+          </ul>
+        </div>
+
+        <!-- 纯 CSS / 文本构成的代码卡片，不使用外部图片 -->
+        <div class="hero__visual" aria-hidden="true">
+          <div class="hero__rings"></div>
+          <div class="code-card">
+            <div class="code-card__bar">
+              <span class="code-card__dots"><i></i><i></i><i></i></span>
+              <span class="code-card__title">tokens.css</span>
+            </div>
+            <div class="code-card__body">
+              <span class="ln"><span class="c">/* 所有主题都在这里 */</span></span>
+              <span class="ln"><span class="p">:root</span> {</span>
+              <span class="ln">  <span class="k">--accent</span>: <span class="s">#7aa2ff</span>;</span>
+              <span class="ln">  <span class="k">--radius</span>: <span class="n">12px</span>;</span>
+              <span class="ln">  <span class="k">--ease</span>: <span class="n">cubic-bezier</span>(.22,.61,.36,<span class="n">1</span>);</span>
+              <span class="ln">}</span>
+              <span class="ln"> </span>
+              <span class="ln"><span class="p">.hero__grid</span> {</span>
+              <span class="ln">  <span class="k">display</span>: <span class="s">grid</span>;</span>
+              <span class="ln">  <span class="k">gap</span>: <span class="n">clamp</span>(<span class="n">2rem</span>, <span class="n">4vw</span>, <span class="n">3.5rem</span>);</span>
+              <span class="ln">}</span>
+              <span class="ln"> </span>
+              <span class="ln"><span class="c">/* 900px 才变成两栏 */</span></span>
+              <span class="ln"><span class="p">@media</span> (<span class="k">min-width</span>: <span class="n">900px</span>) { … }</span>
+            </div>
+          </div>
+          <span class="float-badge float-badge--tl"><span class="dot" aria-hidden="true"></span>可离线运行 · 无 CDN</span>
+          <span class="float-badge float-badge--br">数据只留在本地</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ 数据条 -->
+    <section class="section section--tight">
+      <div class="container">
+        <div class="stat-strip reveal">
+          <div class="stat"><strong>3</strong><span>已完成并上线的项目</span></div>
+          <div class="stat"><strong>5</strong><span>篇开发笔记与复盘</span></div>
+          <div class="stat"><strong>2 年</strong><span>前端开发经验</span></div>
+          <div class="stat"><strong>100%</strong><span>离线可用的页面</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ 项目 -->
+    <section class="section">
+      <div class="container">
+        <div class="section__head-row">
+          <div class="section__head" style="margin-bottom:0">
+            <span class="eyebrow">精选项目</span>
+            <h2 class="section__title">做完、能用、有记录</h2>
+            <p class="section__desc">
+              三个从零开始的项目。每个都写了要解决的问题、具体的做法和事后的复盘，而不只是一张截图。
+            </p>
+          </div>
+          <a class="section__more" href="projects.html">
+            全部项目
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+
+        <div class="grid" id="featuredProjects"></div>
+        <noscript>
+          <p class="muted">项目列表需要 JavaScript 才能显示，也可以直接在 GitHub 上查看：<a class="link" href="https://github.com/yaesakiarishiya/AITraining">AITraining 仓库</a>。</p>
+        </noscript>
+      </div>
+    </section>
+
+    <!-- ============================================================ 技能 -->
+    <section class="section">
+      <div class="container">
+        <div class="section__head">
+          <span class="eyebrow">技能与工具</span>
+          <h2 class="section__title">这几样是我每天都在用的</h2>
+          <p class="section__desc">不追求列表长度，只写真的写过、改过、debug 过的东西。</p>
+        </div>
+
+        <div class="home-cols home-cols--aside">
+          <div class="skill-grid" id="homeSkills"></div>
+
+          <div>
+            <div class="side-card reveal">
+              <h3>最近在做什么</h3>
+              <p>给图提取补详情长图的拼接预览，同时把这个作品集的无障碍细节再过一遍。</p>
+              <ul>
+                <li><span>01</span>长图拼接与预览</li>
+                <li><span>02</span>键盘操作全覆盖</li>
+                <li><span>03</span>文章目录自动高亮</li>
+              </ul>
+            </div>
+            <div class="side-card reveal" style="--delay:80ms">
+              <h3>合作方式</h3>
+              <p>接受前端页面、数据看板和小型工具的开发。先把验收标准写清楚，再谈排期。</p>
+              <p style="margin-top:.8rem">
+                <a class="btn btn--soft btn--sm" href="contact.html">聊聊你的想法</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ 文章 -->
+    <section class="section">
+      <div class="container">
+        <div class="section__head-row">
+          <div class="section__head" style="margin-bottom:0">
+            <span class="eyebrow">最新笔记</span>
+            <h2 class="section__title">踩过的坑，写下来就不算白踩</h2>
+            <p class="section__desc">关于浏览器扩展、确定性数据、响应式布局，以及和 AI 一起写代码的方式。</p>
+          </div>
+          <a class="section__more" href="blog.html">
+            全部文章
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+
+        <div class="grid" id="latestPosts"></div>
+      </div>
+    </section>
+
+    <!-- ============================================================= CTA -->
+    <section class="section section--tight">
+      <div class="container">
+        <div class="cta-banner reveal">
+          <div>
+            <h2>有一个想做很久的小工具？</h2>
+            <p>写清楚它要解决什么问题、做完怎么验证，剩下的我们可以一起拆。通常 1 天内回复。</p>
+          </div>
+          <div class="cta-banner__actions">
+            <a class="btn btn--primary btn--lg" href="contact.html">给我留言</a>
+            <a class="btn btn--ghost btn--lg" href="about.html">先了解我</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================================== 页脚 -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <span class="brand__mark" aria-hidden="true" data-site="initials">ZZ</span>
+          <div>
+            <strong data-site="name-latin">朱泽恩 · Zhu Ze'en</strong>
+            <p data-site="footerBio">前端开发者。做浏览器扩展、数据看板和本地优先的小工具。</p>
+          </div>
+        </div>
+        <div>
+          <p class="footer__title">导航</p>
+          <ul class="footer__list">
+            <li><a href="projects.html">项目</a></li>
+            <li><a href="blog.html">博客</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><a href="contact.html">联系</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer__title">联系</p>
+          <ul class="footer__list">
+            <li><a href="mailto:hello@zhuezen.dev" data-site="email">hello@zhuezen.dev</a></li>
+            <li><a href="https://github.com/yaesakiarishiya" target="_blank" rel="noopener">GitHub</a></li>
+            <li><a href="https://github.com/yaesakiarishiya/AITraining" target="_blank" rel="noopener">项目源码</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>© <span id="year">2026</span> <span data-site="name">朱泽恩</span> · 本站无框架、无 CDN，可离线阅读</p>
+        <div class="footer__meta"><a class="to-top" href="admin.html">内容后台</a><a class="to-top" href="#top">回到顶部 ↑</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/content.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

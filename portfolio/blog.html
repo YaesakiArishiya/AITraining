@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>博客 · 朱泽恩</title>
+  <meta name="description" content="朱泽恩的开发笔记：Chrome 扩展、确定性虚拟数据、响应式布局、AI 结对编程与本地优先的产品思考。" />
+  <meta name="theme-color" content="#0b0f1a" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/pages.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body id="top" data-page="blog">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <div class="starfield" aria-hidden="true"><canvas id="starfield"></canvas></div>
+
+  <header class="site-header" id="siteHeader">
+    <div class="container nav__inner">
+      <a class="brand" href="index.html" aria-label="朱泽恩 · 首页" data-brand-link>
+        <span class="brand__mark" aria-hidden="true" data-site="initials">ZZ</span>
+        <span class="brand__text">
+          <strong data-site="name">朱泽恩</strong>
+          <small data-site="brandRole">Frontend Dev</small>
+        </span>
+      </a>
+
+      <nav class="nav" id="primaryNav" aria-label="主导航">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html">首页</a></li>
+          <li><a class="nav__link" href="projects.html">项目</a></li>
+          <li><a class="nav__link is-active" href="blog.html" aria-current="page">博客</a></li>
+          <li><a class="nav__link" href="about.html">关于</a></li>
+        </ul>
+        <a class="btn btn--primary btn--sm nav__cta" href="contact.html">联系我</a>
+      </nav>
+
+      <button class="nav-toggle" id="navToggle" type="button" aria-label="打开菜单" aria-controls="primaryNav" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main" class="site-main">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="面包屑" style="padding-top:1.5rem">
+        <a href="index.html">首页</a>
+        <span class="breadcrumb__sep" aria-hidden="true">/</span>
+        <span aria-current="page">博客</span>
+      </nav>
+    </div>
+
+    <header class="page-hero" style="border-bottom:0;padding-top:1rem">
+      <div class="container">
+        <span class="eyebrow">博客</span>
+        <h1 class="page-title">开发笔记与事后复盘</h1>
+        <p class="page-desc">
+          都是做项目时真实遇到的问题：扩展的权限边界、可复现的虚拟数据、断点怎么选、以及怎么和 AI 一起把代码写完。
+        </p>
+      </div>
+    </header>
+
+    <section class="section" style="padding-top:clamp(1.5rem,4vw,2.5rem)">
+      <div class="container" id="blogRoot">
+        <div class="empty">
+          <h3>正在加载文章…</h3>
+          <p>如果没有自动显示，请刷新页面。</p>
+        </div>
+      </div>
+
+      <noscript>
+        <div class="container">
+          <div class="empty">
+            <h3>需要 JavaScript 才能显示文章列表</h3>
+            <p>文章内容存放在 <code>js/data.js</code> 中，也可以用文本编辑器直接阅读。</p>
+          </div>
+        </div>
+      </noscript>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <span class="brand__mark" aria-hidden="true" data-site="initials">ZZ</span>
+          <div>
+            <strong data-site="name-latin">朱泽恩 · Zhu Ze'en</strong>
+            <p data-site="footerBio">前端开发者。做浏览器扩展、数据看板和本地优先的小工具。</p>
+          </div>
+        </div>
+        <div>
+          <p class="footer__title">导航</p>
+          <ul class="footer__list">
+            <li><a href="projects.html">项目</a></li>
+            <li><a href="blog.html">博客</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><a href="contact.html">联系</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer__title">联系</p>
+          <ul class="footer__list">
+            <li><a href="mailto:hello@zhuezen.dev" data-site="email">hello@zhuezen.dev</a></li>
+            <li><a href="https://github.com/yaesakiarishiya" target="_blank" rel="noopener">GitHub</a></li>
+            <li><a href="https://github.com/yaesakiarishiya/AITraining" target="_blank" rel="noopener">项目源码</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>© <span id="year">2026</span> <span data-site="name">朱泽恩</span> · 本站无框架、无 CDN，可离线阅读</p>
+        <div class="footer__meta"><a class="to-top" href="admin.html">内容后台</a><a class="to-top" href="#top">回到顶部 ↑</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/content.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

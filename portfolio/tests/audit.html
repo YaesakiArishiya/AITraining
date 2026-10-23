@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>结构与可访问性自检 · 作品集</title>
+  <style>
+    body { margin: 0; font: 13px/1.7 ui-monospace, Menlo, Consolas, monospace; background: #0b0f1a; color: #e6eaf2; }
+    header { padding: 12px 16px; border-bottom: 1px solid #222c40; }
+    #out { padding: 16px; white-space: pre-wrap; }
+    #stage { position: fixed; left: -9999px; top: 0; }
+    iframe { width: 1280px; height: 900px; border: 0; }
+  </style>
+</head>
+<body>
+  <header>结构 / 可访问性自检</header>
+  <div id="stage"></div>
+  <pre id="out">运行中…</pre>
+
+  <script>
+    const pages = ["index.html", "projects.html", "blog.html", "about.html", "contact.html",
+                   "project.html?id=imagegrab", "post.html?slug=manifest-v3-image-grab",
+                   "docs/view.html?doc=PRD"];
+    const out = document.getElementById("out");
+    const stage = document.getElementById("stage");
+    const lines = [];
+
+    // 从 :root 读取实际颜色，检查正文与次要文字的对比度是否达到 WCAG AA
+    function contrast(hexA, hexB) {
+      const lum = (hex) => {
+        const n = hex.replace("#", "");
+        const rgb = [0, 2, 4].map((i) => parseInt(n.slice(i, i + 2), 16) / 255)
+          .map((c) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)));
+        return 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
+      };
+      const a = lum(hexA), b = lum(hexB);
+      return ((Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)).toFixed(2);
+    }
+
+    function loadFrame(src) {
+      return new Promise((resolve) => {
+        const frame = document.createElement("iframe");
+        frame.src = src;
+        frame.onload = () => setTimeout(() => resolve(frame), 300);
+        stage.appendChild(frame);
+      });
+    }
+
+    function audit(frame) {
+      const doc = frame.contentDocument;
+      const win = frame.contentWindow;
+      const issues = [];
+
+      if (!doc.documentElement.lang) issues.push("html 缺少 lang");
+
+      // 图片必须有 alt
+      doc.querySelectorAll("img").forEach((img) => {
+        if (!img.hasAttribute("alt")) issues.push(`img 缺少 alt: ${img.src}`);
+      });
+
+      // 链接必须有可访问名称
+      doc.querySelectorAll("a").forEach((a) => {
+        const text = (a.textContent || "").trim();
+        const label = a.getAttribute("aria-label") || a.getAttribute("title");
+        if (!text && !label && !a.querySelector("img[alt]")) {
+          issues.push(`链接没有名称: ${a.outerHTML.slice(0, 80)}`);
+        }
+      });
+
+      // 按钮必须有名称
+      doc.querySelectorAll("button").forEach((b) => {
+        const text = (b.textContent || "").trim();
+        if (!text && !b.getAttribute("aria-label")) {
+          issues.push(`按钮没有名称: ${b.outerHTML.slice(0, 80)}`);
+        }
+      });
+
+      // id 唯一
+      const ids = {};
+      doc.querySelectorAll("[id]").forEach((el) => {
+        ids[el.id] = (ids[el.id] || 0) + 1;
+      });
+      Object.keys(ids).forEach((id) => {
+        if (ids[id] > 1) issues.push(`重复 id: ${id} ×${ids[id]}`);
+      });
+
+      // 表单控件有关联 label
+      doc.querySelectorAll("input, textarea, select").forEach((el) => {
+        if (el.type === "hidden") return;
+        const id = el.id;
+        const hasLabel = id && doc.querySelector(`label[for="${id}"]`);
+        const closest = el.closest("label");
+        if (!hasLabel && !closest && !el.getAttribute("aria-label")) {
+          issues.push(`表单控件缺少 label: ${el.outerHTML.slice(0, 80)}`);
+        }
+      });
+
+      // 标题层级不跳级
+      let lastLevel = 0;
+      doc.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach((h) => {
+        const level = Number(h.tagName.slice(1));
+        if (lastLevel && level > lastLevel + 1) {
+          issues.push(`标题跳级: h${lastLevel} -> h${level} (${h.textContent.trim().slice(0, 20)})`);
+        }
+        lastLevel = level;
+      });
+
+      // 只统计一个 h1
+      const h1Count = doc.querySelectorAll("h1").length;
+      if (h1Count !== 1) issues.push(`h1 数量为 ${h1Count}`);
+
+      // 触控目标尺寸（只检查按钮类控件；复选框由整行 label 承担点击区域）
+      let small = 0;
+      doc.querySelectorAll("button, .btn, .chip, .nav__link").forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.width === 0) return;
+        if (rect.width < 32 || rect.height < 24) small += 1;
+      });
+      if (small) issues.push(`${small} 个控件尺寸小于 32×24`);
+
+      // 减少动效时内容仍可见
+      const reduced = win.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      // 对比度
+      const styles = win.getComputedStyle(doc.documentElement);
+      const bg = styles.getPropertyValue("--bg").trim();
+      const text = styles.getPropertyValue("--text").trim();
+      const muted = styles.getPropertyValue("--muted-2").trim();
+      const cMain = contrast(text, bg);
+      const cMuted = contrast(muted, bg);
+      if (Number(cMain) < 4.5) issues.push(`正文对比度 ${cMain} 低于 4.5`);
+      if (Number(cMuted) < 4.5) issues.push(`次要文字对比度 ${cMuted} 低于 4.5`);
+
+      return { issues, reduced, contrast: [cMain, cMuted] };
+    }
+
+    (async () => {
+      for (const page of pages) {
+        const frame = await loadFrame(`../${page}`);
+        const result = audit(frame);
+        const tag = result.issues.length ? "BAD" : "OK ";
+        lines.push(`${tag} ${page}` + (result.issues.length ? `\n     -> ${result.issues.join("\n     -> ")}` : ""));
+        out.textContent = lines.join("\n");
+        frame.remove();
+      }
+      window.__RESULT__ = lines.join("\n");
+      out.textContent = lines.join("\n") + "\n\n完成。";
+    })();
+  </script>
+</body>
+</html>

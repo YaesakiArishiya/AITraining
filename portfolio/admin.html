@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>内容后台 · 朱泽恩</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+  <!-- ============================================================== 登录 -->
+  <section class="login" id="loginScreen">
+    <div class="login__card">
+      <a class="login__brand" href="index.html">
+        <span class="mark">ZZ</span>
+        <span>
+          <strong>朱泽恩 · 内容后台</strong>
+          <small>Personal site console</small>
+        </span>
+      </a>
+
+      <h1>登录后台</h1>
+      <p class="login__desc">
+        在这里修改站点上的个人信息、项目简介和文章摘要。保存后立即生效，数据只写入当前浏览器。
+      </p>
+
+      <form id="loginForm" novalidate>
+        <label class="field">
+          <span>演示密码</span>
+          <input class="control" id="loginPassword" type="password" autocomplete="current-password" placeholder="输入演示密码" required aria-describedby="loginError" />
+        </label>
+        <p class="error" id="loginError" role="alert"></p>
+        <button class="btn btn--primary btn--block" type="submit">进入后台</button>
+      </form>
+
+      <p class="login__hint">演示密码：<code>zhuezen2026</code></p>
+      <a class="login__back" href="index.html">← 返回站点首页</a>
+    </div>
+  </section>
+
+  <!-- ============================================================== 后台 -->
+  <div class="admin" id="adminApp" hidden>
+    <aside class="sidebar">
+      <a class="sidebar__brand" href="index.html">
+        <span class="mark">ZZ</span>
+        <span>
+          <strong>内容后台</strong>
+          <small>朱泽恩 · 个人网站</small>
+        </span>
+      </a>
+
+      <nav class="sidebar__nav" aria-label="后台导航">
+        <button type="button" data-view="overview"><span>01</span>概览</button>
+        <button type="button" data-view="profile"><span>02</span>个人信息</button>
+        <button type="button" data-view="projects"><span>03</span>项目</button>
+        <button type="button" data-view="posts"><span>04</span>文章</button>
+        <button type="button" data-view="data"><span>05</span>导入与备份</button>
+      </nav>
+
+      <div class="sidebar__foot">
+        <a class="sidebar__link" href="index.html" target="_blank" rel="noopener">查看站点 ↗</a>
+        <button class="sidebar__link" type="button" id="logoutBtn">退出登录</button>
+      </div>
+    </aside>
+
+    <div class="admin__main">
+      <header class="topbar">
+        <div>
+          <p class="topbar__crumb">后台 / <span id="crumb">概览</span></p>
+          <h1 class="topbar__title" id="viewTitle">内容概览</h1>
+        </div>
+        <div class="topbar__actions">
+          <span class="save-state" id="saveState">未修改</span>
+          <button class="btn btn--ghost" type="button" id="previewBtn">预览站点</button>
+          <button class="btn btn--primary" type="button" id="saveBtn">保存修改</button>
+        </div>
+      </header>
+
+      <main class="admin__content" id="panelRoot"></main>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/content.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "id": "scan_demo_0001",
+  "pageUrl": "https://detail.tmall.com/item.htm?id=680123456789",
+  "pageTitle": "云栖生活旗舰店 - 北欧风家居好物",
+  "scannedAt": 1760000000000,
+  "demo": true,
+  "images": [
+    { "url": "demo/01.png", "width": 640, "height": 640, "source": "img.currentSrc" },
+    { "url": "demo/02.png", "width": 640, "height": 640, "source": "img.src" },
+    { "url": "demo/03.png", "width": 640, "height": 640, "source": "img.data-src" },
+    { "url": "demo/04.png", "width": 640, "height": 640, "source": "img.srcset" },
+    { "url": "demo/05.png", "width": 640, "height": 640, "source": "computed.background" },
+    { "url": "demo/06.png", "width": 640, "height": 640, "source": "img.currentSrc" },
+    { "url": "demo/07.png", "width": 640, "height": 640, "source": "img.src" },
+    { "url": "demo/08.png", "width": 640, "height": 640, "source": "img.data-src" },
+    { "url": "demo/09.png", "width": 640, "height": 640, "source": "img.srcset" },
+    { "url": "demo/10.png", "width": 640, "height": 640, "source": "img.src" },
+    { "url": "demo/11.png", "width": 640, "height": 640, "source": "style.background" },
+    { "url": "demo/12.png", "width": 640, "height": 640, "source": "img.currentSrc" }
+  ]
+}
